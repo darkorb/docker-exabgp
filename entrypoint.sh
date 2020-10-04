@@ -24,4 +24,3 @@ if [ "$1" == 'exabgp' ]; then
 else 
   exec "$@"
 fi
-
