@@ -14,10 +14,12 @@ The container works with `NET_ADMIN` capabilities and `net=host` to add loopback
 
 The routes are then advertised to neighbours.
 
+Configuration is expected to exist in `/usr/etc/exabgp/` in the example below, adjust as needed.
+
 Run as follows:
 
 ```
 docker run -d --name exabgp --restart always -p 179:179 \
            --cap-add=NET_ADMIN --net=host \
-           -v exabgp-conf:/usr/etc/exabgp darkorb/exabgp
+           -v /usr/etc/exabgp:/usr/etc/exabgp darkorb/exabgp
 ```
