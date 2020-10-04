@@ -4,6 +4,15 @@
 
 trigger:
 - master
+- renovate/*
+- dev/*
+
+pr:
+  branches:
+    include:
+    - master
+    - renovate/*
+    - dev/*
 
 resources:
 - repo: self
@@ -27,3 +36,19 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         tags: |
           $(tag)
+- stage: Release
+  displayName: Release Image on Docker Hub
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  jobs:
+    - job: Release
+      displayName: Release
+      steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'darkorb-dockerhub'
+          repository: 'exabgp'
+          command: 'push'
+          tags: |
+            latest
+            v4
