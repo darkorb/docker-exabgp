@@ -1,5 +1,6 @@
 neighbor 10.255.1.254 {
 	router-id 10.255.42.1;
+	local-address 10.255.42.1;
 	local-as 65042;
 	peer-as 65001;
 
@@ -8,9 +9,9 @@ neighbor 10.255.1.254 {
 	}
 }
 
-process watch-loghost {
+process watch-dnshost {
 	encoder text;
-	run python -m exabgp healthcheck --cmd "nc -z -w2 -u localhost 514" --no-syslog --label loghost --withdraw-on-down --ip 10.255.255.1/32;
+	run python3 -m exabgp healthcheck --cmd "nc -z -w2 -u localhost 53" --no-syslog --label loghost --withdraw-on-down --ip 10.255.255.1/32;
 }
 
 process watch-mailhost {
