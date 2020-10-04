@@ -22,7 +22,7 @@ variables:
 stages:
 - stage: ci
   displayName: Build for PR
-  condition: and(eq(variables['Build.Reason'], 'PullRequest'))
+  condition: eq(variables['Build.Reason'], 'PullRequest')
   jobs:  
   - job: Build
     displayName: Build
@@ -38,7 +38,7 @@ stages:
           $(tag)
 - stage: Release
   displayName: Release Image on Docker Hub
-  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   jobs:
     - job: Build
       displayName: Build for release
