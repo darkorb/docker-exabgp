@@ -4,15 +4,14 @@
 
 trigger:
 - master
-- renovate/*
-- dev/*
 
 pr:
   branches:
     include:
-    - master
-    - renovate/*
-    - dev/*
+    - "*"
+  paths:
+    exclude:
+    - README.md
 
 resources:
 - repo: self
@@ -21,8 +20,9 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
-- stage: Build
-  displayName: Build image
+- stage: ci
+  displayName: Build for PR
+  condition: and(eq(variables['Build.Reason'], 'PullRequest'))
   jobs:  
   - job: Build
     displayName: Build
@@ -38,17 +38,20 @@ stages:
           $(tag)
 - stage: Release
   displayName: Release Image on Docker Hub
-  dependsOn: Build
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   jobs:
-    - job: Release
-      displayName: Release
+    - job: Build
+      displayName: Build for release
+      pool:
+        vmImage: 'ubuntu-latest'
       steps:
       - task: Docker@2
         inputs:
           containerRegistry: 'darkorb-dockerhub'
           repository: 'exabgp'
-          command: 'push'
+          command: 'buildAndPush'
+          Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
           tags: |
+            $(Build.BuildId)
             latest
             v4
