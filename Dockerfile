@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.13
 LABEL maintainer="alex@smith.geek.nz"
 
 COPY requirements.txt /requirements.txt
